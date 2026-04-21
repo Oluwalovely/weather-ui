@@ -6,7 +6,7 @@ import {
   Umbrella, Navigation,
 } from "lucide-react";
 
-const API_BASE = "http://localhost:5000/api/weather";
+const API_BASE = "https://weather-backend-dun.vercel.app/api/weather";
 
 
 const getTheme = (conditionText = "") => {
