@@ -203,14 +203,14 @@ export default function WeatherApp() {
         {/* Top bar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "44px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {/* Reactive dot */}
-            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: accent, transition: "background 1.2s", flexShrink: 0 }} />
             {/* Logo */}
             <img
               src="/logo.png"
               alt="weatherbylovely logo"
               style={{ width: "28px", height: "28px", objectFit: "contain", borderRadius: "6px" }}
             />
+            {/* Reactive dot */}
+            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: accent, transition: "background 1.2s", flexShrink: 0 }} />
             {/* Brand name: weatherby in off-white, lovely in gold */}
             <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.01em", fontFamily: "'DM Mono', monospace" }}>
               <span style={{ color: "#F0EDE6" }}>weatherby</span><span style={{ color: "#FFD447" }}>lovely</span>
@@ -389,4 +389,3 @@ export default function WeatherApp() {
     </div>
   );
 }
-
