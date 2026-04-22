@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 
 // ─── API base — matches your Express server ───────────────────────────────────
-const API_BASE = "http://localhost:5000/api/weather";
+const API_BASE = "https://weather-backend-dun.vercel.app/api/weather";
 
 // ─── Theme by condition text (WeatherAPI uses text, not OWM codes) ────────────
 const getTheme = (conditionText = "") => {
