@@ -208,7 +208,7 @@ export default function WeatherApp() {
             />
             {/* Brand name: weatherby in off-white, lovely in gold */}
             <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.01em", fontFamily: "'DM Mono', monospace" }}>
-              <span style={{ color: "#F0EDE6" }}>weatherby</span><span style={{ color: "#FFD447" }}>lovely</span>
+              <span style={{ color: "#F0EDE6" }}>weatherby</span><span style={{ color: accent, transition: "color 1.2s" }}>lovely</span>
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
