@@ -6,9 +6,10 @@ import {
   Umbrella, Navigation,
 } from "lucide-react";
 
+// ─── API base — matches your Express server ───────────────────────────────────
 const API_BASE = "https://weather-backend-dun.vercel.app/api/weather";
 
-
+// ─── Theme by condition text (WeatherAPI uses text, not OWM codes) ────────────
 const getTheme = (conditionText = "") => {
   const t = conditionText.toLowerCase();
   if (t.includes("sunny") || t.includes("clear"))
@@ -26,7 +27,7 @@ const getTheme = (conditionText = "") => {
   return { accent: "#FFD447", bg: "#080600", particle: "#FFD44750" };
 };
 
-
+// ─── Particle background ──────────────────────────────────────────────────────
 function ParticleCanvas({ color }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -69,13 +70,14 @@ function ParticleCanvas({ color }) {
   );
 }
 
-
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Backend already returns temp_c and temp_f — no conversion needed
 const displayTemp = (c, f, unit) => {
   const val = unit === "C" ? c : f;
   return val != null ? Math.round(val) : "--";
 };
 
-
+// Forecast maxTemp/minTemp are always °C from backend
 const displayForecastTemp = (c, unit) => {
   if (c == null) return "--";
   return unit === "C" ? Math.round(c) : Math.round(c * 9 / 5 + 32);
@@ -84,7 +86,7 @@ const displayForecastTemp = (c, unit) => {
 const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const fmtDay = (dateStr) => DAYS[new Date(dateStr).getDay()];
 
-
+// ─── Stat pill ────────────────────────────────────────────────────────────────
 const StatPill = ({ icon: Icon, label, value, accent }) => (
   <div style={{
     border: `1px solid ${accent}20`, borderRadius: "10px",
@@ -93,20 +95,20 @@ const StatPill = ({ icon: Icon, label, value, accent }) => (
   }}>
     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
       <Icon size={12} color={accent} />
-      <span style={{ fontSize: "9px", letterSpacing: "0.14em", color: "#484848", fontWeight: 600, textTransform: "uppercase" }}>{label}</span>
+      <span style={{ fontSize: "9px", letterSpacing: "0.14em", color: "#888", fontWeight: 600, textTransform: "uppercase" }}>{label}</span>
     </div>
     <span style={{ fontSize: "19px", fontWeight: 700, color: "#fff", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.04em" }}>{value}</span>
   </div>
 );
 
-
+// ─── Forecast card — uses WeatherAPI icon URL directly ────────────────────────
 const ForecastCard = ({ day, condition, icon, maxTemp, minTemp, chanceOfRain, accent, unit }) => (
   <div style={{
     display: "flex", flexDirection: "column", alignItems: "center", gap: "7px",
     flex: "1 1 0", minWidth: "54px", padding: "14px 6px",
     borderLeft: "1px solid #ffffff08",
   }}>
-    <span style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.14em", color: "#444", textTransform: "uppercase" }}>{day}</span>
+    <span style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.14em", color: "#888", textTransform: "uppercase" }}>{day}</span>
     {/* WeatherAPI provides icon URLs directly */}
     <img
       src={`https:${icon}`}
@@ -117,7 +119,7 @@ const ForecastCard = ({ day, condition, icon, maxTemp, minTemp, chanceOfRain, ac
     <span style={{ fontSize: "16px", fontWeight: 700, color: "#fff", fontFamily: "'Bebas Neue', sans-serif" }}>
       {displayForecastTemp(maxTemp, unit)}°
     </span>
-    <span style={{ fontSize: "12px", color: "#383838", fontFamily: "'Bebas Neue', sans-serif" }}>
+    <span style={{ fontSize: "12px", color: "#666", fontFamily: "'Bebas Neue', sans-serif" }}>
       {displayForecastTemp(minTemp, unit)}°
     </span>
     {chanceOfRain > 0 && (
@@ -126,7 +128,7 @@ const ForecastCard = ({ day, condition, icon, maxTemp, minTemp, chanceOfRain, ac
   </div>
 );
 
-
+// ─── App ──────────────────────────────────────────────────────────────────────
 export default function WeatherApp() {
   const [query, setQuery]         = useState("");
   const [weather, setWeather]     = useState(null);   // formattedData from /current/:city
@@ -201,11 +203,21 @@ export default function WeatherApp() {
         {/* Top bar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "44px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: accent, transition: "background 1.2s" }} />
-            <span style={{ fontSize: "10px", letterSpacing: "0.22em", color: "#3a3a3a", fontWeight: 500, textTransform: "uppercase" }}>Weather Terminal</span>
+            {/* Logo */}
+            <img
+              src="/logo.png"
+              alt="weatherbylovely logo"
+              style={{ width: "28px", height: "28px", objectFit: "contain", borderRadius: "6px" }}
+            />
+            {/* Reactive dot */}
+            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: accent, transition: "background 1.2s", flexShrink: 0 }} />
+            {/* Brand name: weatherby in off-white, lovely in gold */}
+            <span style={{ fontSize: "13px", fontWeight: 600, letterSpacing: "0.01em", fontFamily: "'DM Mono', monospace" }}>
+              <span style={{ color: "#F0EDE6" }}>weatherby</span><span style={{ color: "#FFD447" }}>lovely</span>
+            </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-            <span style={{ fontSize: "11px", color: "#2e2e2e", letterSpacing: "0.08em", fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontSize: "11px", color: "#888", letterSpacing: "0.08em", fontVariantNumeric: "tabular-nums" }}>
               {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
             </span>
             <button onClick={() => setUnit(u => u === "C" ? "F" : "C")} style={{
@@ -215,7 +227,7 @@ export default function WeatherApp() {
             }}>°{unit} ⇄</button>
             {lastCity && (
               <button onClick={() => fetchWeather(lastCity)} style={{ background: "transparent", border: "none", cursor: "pointer", lineHeight: 0 }}>
-                <RefreshCw size={13} color="#3a3a3a" style={{ animation: loading ? "spin 1s linear infinite" : "none" }} />
+                <RefreshCw size={13} color="#888" style={{ animation: loading ? "spin 1s linear infinite" : "none" }} />
               </button>
             )}
           </div>
@@ -224,7 +236,7 @@ export default function WeatherApp() {
         {/* Search */}
         <form onSubmit={handleSearch} style={{ marginBottom: "52px" }}>
           <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-            <Search size={14} color="#2e2e2e" style={{ position: "absolute", left: 0, pointerEvents: "none" }} />
+            <Search size={14} color="#666" style={{ position: "absolute", left: 0, pointerEvents: "none" }} />
             <input
               type="text"
               value={query}
@@ -259,7 +271,7 @@ export default function WeatherApp() {
         {loading && (
           <div style={{ textAlign: "center", padding: "88px 0" }}>
             <RefreshCw size={26} color={accent} style={{ animation: "spin 1s linear infinite" }} />
-            <p style={{ fontSize: "10px", color: "#2e2e2e", marginTop: "18px", letterSpacing: "0.2em" }}>FETCHING DATA...</p>
+            <p style={{ fontSize: "10px", color: "#888", marginTop: "18px", letterSpacing: "0.2em" }}>FETCHING DATA...</p>
           </div>
         )}
 
@@ -269,7 +281,7 @@ export default function WeatherApp() {
             {/* Location */}
             <div style={{ ...fade(0), display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "8px" }}>
               <div>
-                <div style={{ fontSize: "10px", color: "#333", letterSpacing: "0.16em", marginBottom: "4px", textTransform: "uppercase" }}>
+                <div style={{ fontSize: "10px", color: "#888", letterSpacing: "0.16em", marginBottom: "4px", textTransform: "uppercase" }}>
                   {weather.location.country}  ·  {time.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
                 </div>
                 <h1 style={{ fontSize: "clamp(32px,8vw,72px)", fontFamily: "'Bebas Neue', sans-serif", color: "#fff", margin: 0, lineHeight: 1, letterSpacing: "0.03em" }}>
@@ -300,7 +312,7 @@ export default function WeatherApp() {
 
             {/* Feels like */}
             <div style={{ ...fade(140), display: "flex", alignItems: "center", gap: "16px", margin: "6px 0 36px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "12px", color: "#484848", letterSpacing: "0.04em" }}>
+              <span style={{ fontSize: "12px", color: "#888", letterSpacing: "0.04em" }}>
                 feels like {unit === "C" ? Math.round(weather.current.feelslike_c) : Math.round(weather.current.feelslike_c * 9 / 5 + 32)}°{unit}
               </span>
             </div>
@@ -316,7 +328,7 @@ export default function WeatherApp() {
 
             {/* Local time from WeatherAPI */}
             <div style={{ ...fade(260), marginBottom: "36px" }}>
-              <span style={{ fontSize: "9px", color: "#2e2e2e", letterSpacing: "0.18em", textTransform: "uppercase" }}>
+              <span style={{ fontSize: "9px", color: "#888", letterSpacing: "0.18em", textTransform: "uppercase" }}>
                 Local time · {weather.location.localTime}
               </span>
             </div>
@@ -326,7 +338,7 @@ export default function WeatherApp() {
             {/* 5-day forecast — array from your controller */}
             {forecast && forecast.length > 0 && (
               <div style={{ ...fade(330) }}>
-                <div style={{ fontSize: "9px", letterSpacing: "0.2em", color: "#333", textTransform: "uppercase", marginBottom: "10px" }}>
+                <div style={{ fontSize: "9px", letterSpacing: "0.2em", color: "#888", textTransform: "uppercase", marginBottom: "10px" }}>
                   {forecast.length}-Day Forecast
                 </div>
                 <div style={{ border: `1px solid ${accent}18`, borderRadius: "12px", overflow: "hidden", display: "flex" }}>
@@ -345,7 +357,7 @@ export default function WeatherApp() {
                   ))}
                 </div>
                 {/* Rain chance legend */}
-                <div style={{ fontSize: "9px", color: "#2e2e2e", letterSpacing: "0.12em", marginTop: "8px" }}>
+                <div style={{ fontSize: "9px", color: "#666", letterSpacing: "0.12em", marginTop: "8px" }}>
                   % = chance of rain
                 </div>
               </div>
@@ -356,10 +368,10 @@ export default function WeatherApp() {
         {/* Empty state */}
         {!weather && !loading && !error && (
           <div style={{ paddingTop: "60px" }}>
-            <div style={{ fontSize: "clamp(52px,14vw,130px)", fontFamily: "'Bebas Neue', sans-serif", color: "#111", lineHeight: 0.9, letterSpacing: "0.02em", marginBottom: "28px" }}>
+            <div style={{ fontSize: "clamp(52px,14vw,130px)", fontFamily: "'Bebas Neue', sans-serif", color: "#333", lineHeight: 0.9, letterSpacing: "0.02em", marginBottom: "28px" }}>
               WHAT'S<br />THE<br />WEATHER?
             </div>
-            <p style={{ fontSize: "10px", color: "#282828", letterSpacing: "0.18em", textTransform: "uppercase" }}>
+            <p style={{ fontSize: "10px", color: "#666", letterSpacing: "0.18em", textTransform: "uppercase" }}>
               Type a city name above and press Enter
             </p>
           </div>
@@ -369,7 +381,7 @@ export default function WeatherApp() {
       <style>{`
         @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        input::placeholder { color: #1c1c1c; }
+        input::placeholder { color: #444; }
         button:active { opacity: 0.7 !important; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #ffffff0f; border-radius: 2px; }
